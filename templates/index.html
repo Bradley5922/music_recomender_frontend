@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Recommender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-green-100 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+  <!-- Hero Section as Banner -->
+  <header class="relative bg-green-400 py-20 shadow-lg">
+    <!-- Overlay -->
+    <div class="absolute inset-0 bg-green-500 opacity-50"></div>
+    
+    <!-- Content -->
+    <div class="relative z-10 text-center text-white">
+      <h1 class="text-4xl font-bold">Music Recommender</h1>
+      <p class="text-lg mt-2">Dissertation Market Research / Feedback</p>
+    </div>
+  </header>
+
+  <!-- Form Section -->
+  <div class="max-w-screen-sm w-full p-8 m-4 mt-8 bg-white rounded-lg shadow-lg mx-auto text-center ">
+    <form class="space-y-4" action="#" onsubmit="computeRec()">
+      <!-- Email Input -->
+      <input type="email" required class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Enter your email">
+
+      <!-- Search Input -->
+      <div class="relative">
+        <input type="text" id="search_box" class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Search Albums / Artists">
+        
+        <!-- Results Container with Spinner -->
+        <div id="resultsContainer" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-52 overflow-y-auto hidden z-10">
+          <div id="loadingSpinner" class="flex items-center justify-center p-4">
+            <div class="loader border-t-4 border-green-400 border-solid rounded-full w-6 h-6 animate-spin"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button id="submit_button" class="w-full py-2 bg-green-500 hover:bg-green-600 rounded-md font-bold text-white">Submit</button>
+    </form>
+  </div>
+
+  <!-- Second Box -->
+  <div class="max-w-screen-sm w-full p-8 m-4 bg-white rounded-lg shadow-lg mx-auto text-left ">
+    <p class="font-bold text-lg">Selected Songs</p>
+    <p class="mb-4">Use the search above to add albums, click albums in this list to remove them...</p>
+
+    <div id="selectedAlbumList"></div>
+
+    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+      <p class="font-bold">10 Songs Minimum</p>
+      <p>To allow the recommendation algorithm to understand your taste, please input at least 10 albums using the search above.</p>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <footer class="bg-white shadow-2xl py-4 flex items-center space-x-4 px-3">
+    <img src="https://bradleycable.co.uk/img/uob.png" alt="Placeholder Image" class="h-12">
+    <div class="text-left">
+      <p class="text-lg font-bold">Bradley Cable</p>
+      <p class="text-sm text-gray-600">University of Birmingham, Computer Science Dept.</p>
+    </div>
+  </footer>
+
+  <style>
+    /* CSS for the spinner loader */
+    .loader {
+      border-top-color: #4CAF50;
+      border-width: 4px;
+    }
+  </style>
+
+  <script>
+    let typingTimer;
+    const typingDelay = 1500; // 1 second before sending request (aka. on finished typing)
+
+    const search_box = document.getElementById("search_box");
+    const submit_button = document.getElementById("submit_button");
+    const resultsContainer = document.getElementById("resultsContainer");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+
+    selected_albums = []
+
+    function computeRec() {
+      userCollection = selected_albums.map(album => album.master_id)
+      console.log(userCollection)
+
+      fetch('/computeRec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: userCollection }),
+      })
+
+      submit_button.disabled = true
+      submit_button.classList.remove("bg-green-500")
+      submit_button.classList.add("bg-gray-500")
+
+      alert('Your recomendation is now being computed using an algorithm.\n\nYou will recive an email, with your recomendations and some intructions later today.\n\nThanks for your participation so far!');
+    }
+
+    search_box.addEventListener("input", () => {
+      clearTimeout(typingTimer);
+
+      if (search_box.value.length > 0) {
+        resultsContainer.classList.remove("hidden");
+        loadingSpinner.classList.remove("hidden");
+
+        // Clear previous results so spinner can be seen again between typing
+        resultsContainer.innerHTML = "";  
+        resultsContainer.appendChild(loadingSpinner); 
+      } else {
+        resultsContainer.classList.add("hidden");
+      }
+
+      typingTimer = setTimeout(search, typingDelay);
+    });
+
+    function search() {
+      const search_term = search_box.value;
+
+      if (search_term.length <= 3) {
+        return;
+      }
+
+      fetch(`/searchDiscogs?search_term=${search_term}`)
+        .then(response => response.json())
+        .then(data => {
+          displayResults(data["albums"]);
+        })
+        .catch(error => {
+          console.error('Error fetching results:', error);
+          loadingSpinner.classList.add("hidden");
+        });
+    }
+
+    function createAlbumDivElem(result) {
+      const resultDiv = document.createElement("div");
+      resultDiv.classList.add("flex", "items-center", "p-2", "cursor-pointer");
+
+      const img = document.createElement("img");
+      img.src = result.cover_image;
+      img.alt = result.title;
+      img.classList.add("rounded-lg", "w-12", "h-12", "mr-3", "object-cover");
+
+      img.onerror = () => { // placeholder img
+        img.src = "/static/backup-album-art.jpg";
+      };
+
+      const title = document.createElement("span");
+      title.textContent = result.title;
+      title.classList.add("text-sm", "font-medium", "truncate");
+
+      resultDiv.appendChild(img);
+      resultDiv.appendChild(title);
+
+      return resultDiv;
+    }
+
+    function displayResults(results) {
+      resultsContainer.innerHTML = "";  // Clear spinner and old results
+
+      if (results.length > 0) {
+        results.forEach(result => {
+          const divListElem = createAlbumDivElem(result);
+          divListElem.classList.add("hover:bg-gray-100");
+          divListElem.onclick = () => selectResult(result);
+
+          resultsContainer.appendChild(divListElem);
+        });
+      } else {
+        const noResults = document.createElement("div");
+        noResults.classList.add("p-4", "text-center", "text-gray-500");
+        noResults.textContent = "No results found.";
+        resultsContainer.appendChild(noResults);
+      }
+
+      // show results now loaded in
+      loadingSpinner.classList.add("hidden");
+    }
+
+    function selectResult(result) {
+      
+      selected_albums.push(result);
+
+      resultsContainer.classList.add("hidden");
+
+      const divListElem = createAlbumDivElem(result);
+      divListElem.classList.add("bg-gray-100", "hover:bg-red-100", "rounded-lg", "mb-4");
+      divListElem.onclick = function() {
+        document.getElementById("selectedAlbumList").removeChild(divListElem);
+        selected_albums.splice(selected_albums.indexOf(result), 1);
+      }
+
+      document.getElementById("selectedAlbumList").appendChild(divListElem);
+    }
+  </script>
+
+</body>
+</html>
