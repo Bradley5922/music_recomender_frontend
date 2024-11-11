@@ -7,7 +7,7 @@ print("Total top level genres: ", len(genres.list))
 
 print("Starting Matrix Generation (loading in file)...")
 
-with open('masters.json') as f:
+with open('../masters.json') as f:
     data = json.load(f)
     f.close()
 
