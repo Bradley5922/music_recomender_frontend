@@ -9,6 +9,7 @@ user_matrix = [0] * len(styles.list)
 # Load matrix incrementally
 print("Loading artist matrix incrementally...")
 data = {}
+
 with open('output_matrix.json', 'r') as f:
     # Use kvitems to iterate over key-value pairs at the root level of the JSON file
     for artist_name, artist_data in ijson.kvitems(f, ''):

@@ -3,6 +3,7 @@ import requests
 from time import time
 import emailSender
 import recomendation_algo as rec_algo
+import threading 
 
 DISCOGS_API_KEY = "REDACTED_API_KEY"
 DISCOGS_API_SECRET = "REDACTED_API_SECRET"
@@ -52,6 +53,13 @@ def generate_recommendation_results():
 
     print(f"Collection received from front-end: {user_collection}")
 
+    # Create a separate thread for matrix computation and email sending
+    thread = threading.Thread(target=compute_and_send_email, args=(user_collection, email))
+    thread.start()
+
+    return "Processed!"
+
+def compute_and_send_email(user_collection, email):
     print("Creating user matrix...")
     user_matrix = rec_algo.create_user_matrix(user_collection=user_collection)
     user_matrix = rec_algo.normalise_array(user_matrix)
@@ -67,8 +75,6 @@ def generate_recommendation_results():
     print(f"Recommendation computation completed in {elapsed_time:.4f} seconds")
 
     send_recommendation_email(produce_top_recommendation_metadata(user_recommendation_results), email)
-
-    return "Processed!"
 
 class ReleaseMetadata:
     def __init__(self, album_data):
@@ -122,7 +128,6 @@ def send_recommendation_email(rec_metadata, email):
         emailSender.send_email(email, rec_email_text)
     except Exception as e:
         print(f"Error sending email: {e}")
-
 
 def fetch_artist_releases(artist_id):
     url = f"https://api.discogs.com/artists/{artist_id}/releases?key={DISCOGS_API_KEY}&secret={DISCOGS_API_SECRET}"
