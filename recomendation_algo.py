@@ -7,7 +7,7 @@ import time
 # Example Data
 user_matrix = [0] * len(styles.list)
 
-# Load in matrix
+# # Load in matrix
 print("Loading in artist matrix...")
 with open('output_matrix.json') as f:
     data = json.load(f)
@@ -90,14 +90,14 @@ def compute_recomedation(user_matrix, top_n):
         distance = math.sqrt(sum((a - b) ** 2 for a, b in zip(user_matrix, artist_matrix)))
         
         # Compute dot product
-        # dot_product = sum(a * b for a, b in zip(user_matrix, artist_matrix))
+        dot_product = sum(a * b for a, b in zip(user_matrix, artist_matrix))
         
         # Collect both metrics
-        results.append({'artist': {"id": data[artist]["id"], "name": artist}, 'distance': distance})
+        results.append({'artist': {"id": data[artist]["id"], "name": artist}, 'distance': distance, 'dot_product': dot_product})
 
     # Sort separately for Euclidean distance and dot product
     top_by_distance = sorted(results, key=lambda x: x['distance'])[:top_n]
-    # top_by_dot_product = sorted(results, key=lambda x: x['dot_product'], reverse=True)[:top_n]
+    top_by_dot_product = sorted(results, key=lambda x: x['dot_product'], reverse=True)[:top_n]
 
     # Print the top artists by Euclidean distance
     # print(f"\nTop {top_n} artists by Euclidean distance:")
@@ -109,7 +109,7 @@ def compute_recomedation(user_matrix, top_n):
     # for item in top_by_dot_product:
     #     print(f"Artist: {item['artist']}, Dot Product: {item['dot_product']:.2f}")
 
-    return top_by_distance
+    return {"distance": top_by_distance, "dot_product": top_by_dot_product}
 
 # Only run if called directly
 # if __name__ == '__main__':
