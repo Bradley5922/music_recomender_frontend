@@ -22,9 +22,28 @@
   </header>
 
   <!-- Selection Box -->
-  <div class="max-w-screen-sm w-full p-8 m-4 bg-white rounded-lg shadow-lg mx-auto text-left mt-8">
-    <p class="font-bold text-lg">Selected Albums</p>
-    <p class="mb-4">Use the search below to add albums, click albums in this list to remove them...</p>
+  <div class="max-w-screen-sm w-full p-8 m-4 bg-white rounded-lg shadow-lg
+  mx-auto text-left mt-8">
+    
+    <!-- Search Input -->
+    <div class="relative">
+        
+      <input type="text" id="search_box" class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Search Albums / Artists">
+      
+      <!-- Results Container with Spinner -->
+      <div id="resultsContainer" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-52 overflow-y-auto hidden z-10">
+        <div id="loadingSpinner" class="flex items-center justify-center p-4">
+          <div class="loader border-t-4 border-green-400 border-solid rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="mt-4 mb-4">
+
+    <p class="text-lg"><strong>Selected Albums</strong> (<span class=""
+      id="selected_so_far">0</span>/10)</p>
+    <p class="mb-4">Use the search box above to add albums, click albums in the
+    list below if you need to remove them...</p>
 
     <div id="selectedAlbumList"></div>
 
@@ -37,21 +56,10 @@
 
   <!-- Form Section -->
   <div class="max-w-screen-sm w-full p-8 m-4 mb-8 bg-white rounded-lg shadow-lg mx-auto text-center ">
-    <form class="space-y-4" action="#" onsubmit="computeRec()" onkeydown="return event.key != 'Enter';">
+    <form class="space-y-4 text-left" action="#" onsubmit="computeRec()" onkeydown="return event.key != 'Enter';">
 
-      <!-- Search Input -->
-      <div class="relative">
-        
-        <input type="text" id="search_box" class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Search Albums / Artists">
-        
-        <!-- Results Container with Spinner -->
-        <div id="resultsContainer" class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-52 overflow-y-auto hidden z-10">
-          <div id="loadingSpinner" class="flex items-center justify-center p-4">
-            <div class="loader border-t-4 border-green-400 border-solid rounded-full w-6 h-6 animate-spin"></div>
-          </div>
-        </div>
-      </div>
-
+      <p><span style="color: red" class="font-medium">Once you're done adding albums, enter your email below and submit.</span><br>Your recomendation will then be proccessed and you'll recive and email
+        once it is done!</p>
       <!-- Email Input -->
       <input type="email" id="email_box" required class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Enter your email">
 
@@ -101,7 +109,7 @@
         body: JSON.stringify({ "data": userCollection, "email": email_box.value}),
       })
 
-      alert('Your recomendation is now being computed using an algorithm.\n\nYou will recive an email, with your recomendations and some intructions later today.\n\nThanks for your participation so far!');
+      alert('Your recomendation is now being computed using an algorithm.\n\nYou will recive an email (check junk), with your recomendations and some intructions later today.\n\nThanks for your participation so far!');
     }
 
     search_box.addEventListener("input", () => {
@@ -188,6 +196,7 @@
       search_box.value = "";
       
       selected_albums.push(result);
+      updateCount()
 
       resultsContainer.classList.add("hidden");
 
@@ -195,10 +204,16 @@
       divListElem.classList.add("bg-gray-100", "hover:bg-red-100", "rounded-lg", "mb-4");
       divListElem.onclick = function() {
         document.getElementById("selectedAlbumList").removeChild(divListElem);
+        
         selected_albums.splice(selected_albums.indexOf(result), 1);
+        updateCount()
       }
 
       document.getElementById("selectedAlbumList").appendChild(divListElem);
+    }
+
+    function updateCount() {
+      document.getElementById("selected_so_far").innerHTML = selected_albums.length
     }
   </script>
 

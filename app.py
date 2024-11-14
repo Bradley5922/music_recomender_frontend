@@ -2,7 +2,7 @@ import flask as f
 import requests
 from time import time
 import emailSender
-import recomendation_algo as rec_algo
+# import recomendation_algo as rec_algo
 import threading 
 
 # loading variables from .env file
@@ -113,7 +113,7 @@ def send_recommendation_email(rec_metadata, email):
 
     rec_email_text = f"""
     <p style="font-weight: bold;">Measure A:</p>
-    <ul>
+    <ol>
         <li>{rec_metadata['distance'][0].title} by <strong>{rec_metadata['distance'][0].artist}</strong></li>
             <ul>
                 <li><a href="{rec_metadata['distance'][0].apple_music_url}">Apple Music</a></li>
@@ -134,10 +134,10 @@ def send_recommendation_email(rec_metadata, email):
                 <li><a href="{rec_metadata['distance'][3].apple_music_url}">Apple Music</a></li>
                 <li><a href="{rec_metadata['distance'][3].spotify_url}">Spotify</a></li>
             </ul>
-    </ul>
+    </ol>
 
     <p style="font-weight: bold;">Measure B:</p>
-    <ul>
+    <ol>
         <li>{rec_metadata['dot_product'][0].title} by <strong>{rec_metadata['dot_product'][0].artist}</strong></li>
             <ul>
                 <li><a href="{rec_metadata['dot_product'][0].apple_music_url}">Apple Music</a></li>
@@ -158,7 +158,7 @@ def send_recommendation_email(rec_metadata, email):
                 <li><a href="{rec_metadata['dot_product'][3].apple_music_url}">Apple Music</a></li>
                 <li><a href="{rec_metadata['dot_product'][3].spotify_url}">Spotify</a></li>
             </ul>
-    </ul>
+    </ol>
     """
 
     try:
