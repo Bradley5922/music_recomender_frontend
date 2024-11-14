@@ -49,7 +49,7 @@ def send_email(email, actual_recommendations):
         {actual_recommendations}
 
         <p>
-            <a href="https://google.com" style="font-size: 16px; color: #1a73e8;">Here is a link to the survey for you to fill out</a>
+            <a href="https://forms.gle/15orBPuby5SFrecZ6" style="font-size: 16px; color: #1a73e8;">Here is a link to the survey for you to fill out</a>
         </p>
         <span style="font-style: italic;">(Please read the survey first so you know what questions you will be asked)</span>
 
