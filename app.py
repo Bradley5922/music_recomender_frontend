@@ -5,8 +5,13 @@ import emailSender
 import recomendation_algo as rec_algo
 import threading 
 
-DISCOGS_API_KEY = "REDACTED_API_KEY"
-DISCOGS_API_SECRET = "REDACTED_API_SECRET"
+# loading variables from .env file
+import os
+from dotenv import load_dotenv, dotenv_values 
+load_dotenv() 
+
+DISCOGS_API_KEY = os.getenv("DISCOGS_API_KEY")
+DISCOGS_API_SECRET = os.getenv("DISCOGS_API_SECRET")
 
 app = f.Flask(__name__)
 
@@ -193,5 +198,5 @@ def send_report():
 def index():
     return f.render_template('index.html')
 
-# if __name__ == '__main__':
-#	app.run(host='0.0.0.0', port=80)
+if __name__ == '__main__':
+	app.run(host='localhost', port=1234)
