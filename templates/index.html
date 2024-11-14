@@ -21,14 +21,27 @@
     </div>
   </header>
 
+  <!-- Selection Box -->
+  <div class="max-w-screen-sm w-full p-8 m-4 bg-white rounded-lg shadow-lg mx-auto text-left mt-8">
+    <p class="font-bold text-lg">Selected Albums</p>
+    <p class="mb-4">Use the search below to add albums, click albums in this list to remove them...</p>
+
+    <div id="selectedAlbumList"></div>
+
+    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+      <p class="font-bold">10 Songs Minimum</p>
+      <p>To allow the recommendation algorithm to understand your taste, please
+      input at least 10 albums using the search below before submitting.</p>
+    </div>
+  </div>
+
   <!-- Form Section -->
-  <div class="max-w-screen-sm w-full p-8 m-4 mt-8 bg-white rounded-lg shadow-lg mx-auto text-center ">
+  <div class="max-w-screen-sm w-full p-8 m-4 mb-8 bg-white rounded-lg shadow-lg mx-auto text-center ">
     <form class="space-y-4" action="#" onsubmit="computeRec()" onkeydown="return event.key != 'Enter';">
-      <!-- Email Input -->
-      <input type="email" id="email_box" required class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Enter your email">
 
       <!-- Search Input -->
       <div class="relative">
+        
         <input type="text" id="search_box" class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Search Albums / Artists">
         
         <!-- Results Container with Spinner -->
@@ -39,22 +52,12 @@
         </div>
       </div>
 
+      <!-- Email Input -->
+      <input type="email" id="email_box" required class="w-full px-4 py-2 border border-green-400 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Enter your email">
+
       <!-- Submit Button -->
       <button id="submit_button" class="w-full py-2 bg-green-500 hover:bg-green-600 rounded-md font-bold text-white">Submit</button>
     </form>
-  </div>
-
-  <!-- Second Box -->
-  <div class="max-w-screen-sm w-full p-8 m-4 bg-white rounded-lg shadow-lg mx-auto text-left mb-8">
-    <p class="font-bold text-lg">Selected Albums</p>
-    <p class="mb-4">Use the search above to add albums, click albums in this list to remove them...</p>
-
-    <div id="selectedAlbumList"></div>
-
-    <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
-      <p class="font-bold">10 Songs Minimum</p>
-      <p>To allow the recommendation algorithm to understand your taste, please input at least 10 albums using the search above.</p>
-    </div>
   </div>
 
   <!-- Bottom Bar -->

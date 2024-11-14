@@ -109,18 +109,50 @@ def send_recommendation_email(rec_metadata, email):
     rec_email_text = f"""
     <p style="font-weight: bold;">Measure A:</p>
     <ul>
-        <li>{rec_metadata['distance'][0].title} by {rec_metadata['distance'][0].artist}</li>
-        <li>{rec_metadata['distance'][1].title} by {rec_metadata['distance'][1].artist}</li>
-        <li>{rec_metadata['distance'][2].title} by {rec_metadata['distance'][2].artist}</li>
-        <li>{rec_metadata['distance'][3].title} by {rec_metadata['distance'][3].artist}</li>
+        <li>{rec_metadata['distance'][0].title} by <strong>{rec_metadata['distance'][0].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['distance'][0].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['distance'][0].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['distance'][1].title} by <strong>{rec_metadata['distance'][1].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['distance'][1].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['distance'][1].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['distance'][2].title} by <strong>{rec_metadata['distance'][2].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['distance'][2].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['distance'][2].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['distance'][3].title} by <strong>{rec_metadata['distance'][3].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['distance'][3].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['distance'][3].spotify_url}">Spotify</a></li>
+            </ul>
     </ul>
 
     <p style="font-weight: bold;">Measure B:</p>
     <ul>
-        <li>{rec_metadata['dot_product'][0].title} by {rec_metadata['dot_product'][0].artist}</li>
-        <li>{rec_metadata['dot_product'][1].title} by {rec_metadata['dot_product'][1].artist}</li>
-        <li>{rec_metadata['dot_product'][2].title} by {rec_metadata['dot_product'][2].artist}</li>
-        <li>{rec_metadata['dot_product'][3].title} by {rec_metadata['dot_product'][3].artist}</li>
+        <li>{rec_metadata['dot_product'][0].title} by <strong>{rec_metadata['dot_product'][0].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['dot_product'][0].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['dot_product'][0].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['dot_product'][1].title} by <strong>{rec_metadata['dot_product'][1].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['dot_product'][1].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['dot_product'][1].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['dot_product'][2].title} by <strong>{rec_metadata['dot_product'][2].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['dot_product'][2].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['dot_product'][2].spotify_url}">Spotify</a></li>
+            </ul>
+        <li>{rec_metadata['dot_product'][3].title} by <strong>{rec_metadata['dot_product'][3].artist}</strong></li>
+            <ul>
+                <li><a href="{rec_metadata['dot_product'][3].apple_music_url}">Apple Music</a></li>
+                <li><a href="{rec_metadata['dot_product'][3].spotify_url}">Spotify</a></li>
+            </ul>
     </ul>
     """
 
@@ -152,6 +184,10 @@ def fetch_artist_releases(artist_id):
     except requests.RequestException as error:
         print(f"An error occurred while fetching releases for artist {artist_id}: {error}")
         return []
+    
+@app.route('/draft')
+def send_report():
+    return f.send_from_directory('static', 'draft.pdf')
 
 @app.route("/")
 def index():
