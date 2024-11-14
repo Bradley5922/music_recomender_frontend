@@ -104,7 +104,7 @@ def produce_top_recommendation_metadata(rec_results):
     return rec_meta_dict
 
 def send_recommendation_email(rec_metadata, email):
-    print(f"Sending recommendation email to {email}...")
+    print(f"Preparing email to {email}...")
 
     rec_email_text = f"""
     <p style="font-weight: bold;">Measure A:</p>
